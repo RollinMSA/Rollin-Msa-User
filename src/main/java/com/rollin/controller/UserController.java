@@ -3,6 +3,7 @@ package com.rollin.controller;
 
 import com.rollin.aspect.TokenRequired;
 import com.rollin.config.SecurityService;
+import com.rollin.model.UserDto;
 import com.rollin.model.UserEntity;
 import com.rollin.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ public class UserController {
     @Autowired
     SecurityService securityService;
 
+    @Autowired
+    UserDto userDto;
     @GetMapping
     public List<UserEntity> getUser() {
         return userService.getAllUser();
@@ -38,7 +41,7 @@ public class UserController {
     @GetMapping("/me")
     @TokenRequired
     public Optional<UserEntity> getUserByMe(){
-        Integer id=Integer.valueOf(securityService.getIdAtToken());
+        Integer id= securityService.getIdAtToken();
         return userService.getUserById(id);
     }
 
@@ -65,14 +68,20 @@ public class UserController {
 
     @PostMapping("/Login")
     public Optional<UserEntity> loginUser(@RequestBody UserEntity userEntity){
+
         Optional<UserEntity> returnUser =userService.serviceLogin(userEntity); //쿼리 입력 후 결과값
+        log.info(String.valueOf(returnUser));
         returnUser.ifPresent(selectUser->{
             selectUser.setUserId(selectUser.getUserId());
             selectUser.setId(selectUser.getId());
             selectUser.setName(selectUser.getName()); //반값으로 형성된 곳에 하나씩 채워진다.
             selectUser.setImg(selectUser.getImg());
             selectUser.setPcnt(selectUser.getPcnt());
-            String token = securityService.createToken(selectUser.getId().toString()); //받아온 값을 셋토큰에 넣어준다.
+            userDto.setId(selectUser.getId());
+            userDto.setName(selectUser.getName());
+            userDto.setImg(selectUser.getImg());
+            log.info("idididididid: "+userDto.getId().toString());
+            String token = securityService.createToken(userDto); //받아온 값을 셋토큰에 넣어준다.
             selectUser.setToken(token);
         });
         return returnUser;
