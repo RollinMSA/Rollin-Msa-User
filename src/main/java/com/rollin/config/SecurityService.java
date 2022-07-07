@@ -1,5 +1,6 @@
 package com.rollin.config;
 
+import com.rollin.model.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -22,11 +25,15 @@ public class SecurityService {
     String SECRET_KEY;
     @Value("${jwt.expTime}")
     long expTime;
-    public String createToken(String subject){
+    public String createToken(UserDto userDto){
         if(expTime<=0){
             throw new RuntimeException();
         }
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+        log.info(SECRET_KEY);
+        Map<String,Object> map = new HashMap<>();
+        map.put("name",userDto.getName());
+        map.put("img",userDto.getImg());
         byte[] secretKeyBytes = DatatypeConverter.parseBase64Binary(SECRET_KEY);
         Key signatureKey =
                 new SecretKeySpec(
@@ -34,7 +41,8 @@ public class SecurityService {
                         ,signatureAlgorithm.getJcaName()
                 );
         return Jwts.builder()
-                .setSubject(subject)
+                .setClaims(map)
+                .setSubject(userDto.getId().toString())
                 .signWith(signatureKey,signatureAlgorithm)
                 .setExpiration(new Date(System.currentTimeMillis()+expTime))
                 .compact();
@@ -50,15 +58,13 @@ public class SecurityService {
                 .getBody();
         return claims.getSubject();
     }
-    public Integer getIdAtToken(){
+    public Integer getIdAtToken() {
         // header 에서 빼오는 거
         ServletRequestAttributes requestAttributes =
                 (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
-        String tokenBearer = request.getHeader("Authorization");
-        // 토큰에서 id 값빼오는거
-        String id = getSubject(tokenBearer);
-        return Integer.parseInt(id);
+        String id = request.getHeader("Authorization");
+        return Integer.parseInt(getSubject(id));
     }
 
 }

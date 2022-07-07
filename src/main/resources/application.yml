@@ -11,30 +11,30 @@ eureka:
 spring:
   application:
     name: user-service
+  datasource:
+    url: jdbc:mysql://localhost/rollin?serverTimezone=UTC&characterEncoding=UTF-8
+    username: root
+    password: 1234
 
   devtools:
     livereload:
       enabled: true
-  datasource:
-    url: jdbc:mysql://localhost:3306/rollin?serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 123123123
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQLInnoDBDialect
-        format_sql: 'true'
-    database-platform: org.hibernate.dialect.MySQL5Dialect
-    hibernate:
-      ddl-auto: update
-      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-    show-sql: 'true'
-jwt:
-  secret_key: SECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEY
-  expTime : 86400000
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
+#  jpa:
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQLInnoDBDialect
+#        format_sql: 'true'
+#    database-platform: org.hibernate.dialect.MySQL5Dialect
+#    hibernate:
+#      ddl-auto: update
+#      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+#    show-sql: 'true'
+#jwt:
+#  secret_key: SECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEYSECRET_KEY
+#  expTime : 86400000
 #management:
 #  endpoints:
 #    web:
